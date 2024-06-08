@@ -1,0 +1,21 @@
+﻿@model RapidBootcamp.WebApplication.Models.Category
+
+<html>
+    <head>
+        <title>Home Page</title>
+    </head>
+    <body>
+        <h1>Welcome @ViewData["FullName"]</h1>
+        <p>Address @ViewBag.Address</p>
+        <p>@Model.CategoryId &nbsp; @Model.CategoryName</p>
+        <br/>
+
+        <form method="POST" action="/Home/Details">
+            <label for="firstname">Firstname :</label><br/>
+            <input type="text" id="firstname" name="firstname" /><br/>
+            <label for="lastname">Lastname :</label><br/>
+            <input type="text" id="lastname" name="lastname" /><br/>
+            <input type="submit" value="Submit" />
+        </form>
+    </body>
+</html>

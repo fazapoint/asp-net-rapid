@@ -1,0 +1,40 @@
+﻿@model List<RapidBootcamp.WebApplication.Models.Category>
+
+<html>
+<head>
+    <title>List Of Categories</title>
+</head>
+<body>
+    <h1>List Of Categories</h1>
+    <br />
+    @ViewBag.Message
+    <br />
+    <form method="post" action="/Categories/Index">
+        <input type="text" name="categoryname"/>
+        <input type="submit" value="Search"/>
+    </form>
+    <br />
+    <a href="/Categories/Create">Create Category</a>
+
+    <table border="1">
+        <tr>
+            <th>Category Id</th>
+            <th>Category Name</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+        </tr>
+        @foreach (var category in Model)
+        {
+            <tr>
+                <td>@category.CategoryId</td>
+                <td>@category.CategoryName</td>
+                <td><a href="/Categories/Details/@category.CategoryId">detail</a></td>
+                <td><a href="/Categories/Edit/@category.CategoryId">edit</a></td>
+                <td><a href="/Categories/Delete/@category.CategoryId">delete</a></td>
+            </tr>
+        }
+    </table>
+
+</body>
+</html>

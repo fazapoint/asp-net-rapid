@@ -1,0 +1,13 @@
+﻿@model RapidBootcamp.WebApplication.Models.Customer;
+<html>
+<body>
+    <h2>DELETE</h2>
+    <form action="/Customers/Delete" method="post">
+        <p>apakah anda yakin akan menghapus @Model.CustomerName</p>
+        <input type="hidden" value="@Model.CustomerId" name="CustomerId" />
+        <div>
+            <input type="submit" value="Delete" />
+        </div>
+    </form>
+</body>
+</html>
