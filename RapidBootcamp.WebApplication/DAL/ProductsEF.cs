@@ -29,7 +29,14 @@ namespace RapidBootcamp.WebApplication.DAL
 
         public Product GetById(int id)
         {
-            throw new NotImplementedException();
+            var result = _dbContext.Products.Include(p => p.Category)
+                         .FirstOrDefault(c => c.ProductId == id);
+
+            if (result == null)
+            {
+                throw new ArgumentException("Product not found");
+            }
+            return result;
         }
 
         public IEnumerable<Product> GetProductsByCategory(int categoryId)

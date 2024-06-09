@@ -22,7 +22,8 @@ namespace RapidBootcamp.WebApplication.Controllers
         // GET: ProductsController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            var result = _product.GetById(id);
+            return View(result);
         }
 
         // GET: ProductsController/Create
