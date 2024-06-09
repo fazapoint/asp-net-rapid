@@ -13,7 +13,16 @@ namespace RapidBootcamp.WebApplication.DAL
 
         public Product Add(Product entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _dbContext.Add(entity);
+                _dbContext.SaveChanges();
+                return entity;
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException(ex.Message);
+            }
         }
 
         public void Delete(int id)

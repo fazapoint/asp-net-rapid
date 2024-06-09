@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RapidBootcamp.WebApplication.DAL;
+using RapidBootcamp.WebApplication.Models;
 
 namespace RapidBootcamp.WebApplication.Controllers
 {
@@ -15,6 +16,12 @@ namespace RapidBootcamp.WebApplication.Controllers
         // GET: ProductsController
         public ActionResult Index()
         {
+
+            if (TempData["Message"] != null)
+            {
+                ViewBag.Message = TempData["Message"];
+            }
+
             var results = _product.GetAll();
             return View(results);
         }
@@ -34,15 +41,18 @@ namespace RapidBootcamp.WebApplication.Controllers
 
         // POST: ProductsController/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Product product)
         {
             try
             {
+                var result = _product.Add(product);
+                TempData["Message"] = $"{product.ProductName} added succesfully";
+
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
+                ViewBag.ErrorMessage = "Product not added";
                 return View();
             }
         }
