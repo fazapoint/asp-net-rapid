@@ -4,7 +4,8 @@ namespace RapidBootcamp.BackendAPI.DAL
 {
     public interface IProduct : ICrud<Product>
     {
-        IEnumerable<Product> GetProductsByName(string productName);
-        IEnumerable<Product> GetProductsByCategory(int categoryId);
+        IEnumerable<Product> GetByCategory(int categoryId);
+        IEnumerable<Product> GetByProductName(string productName);
+        IEnumerable<Product> GetProductsWithCategory();
     }
 }
