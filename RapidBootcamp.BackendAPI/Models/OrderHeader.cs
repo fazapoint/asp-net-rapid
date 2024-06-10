@@ -1,4 +1,4 @@
-﻿namespace RapidBootcamp.WebApplication.Models
+﻿namespace RapidBootcamp.BackendAPI.Models
 {
     public class OrderHeader
     {
