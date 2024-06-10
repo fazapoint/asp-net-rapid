@@ -298,7 +298,7 @@ namespace RapidBootcamp.BackendAPI.DAL
                 _command.Parameters.AddWithValue("@Price", entity.Price);
                 _command.Parameters.AddWithValue("@Stock", entity.Stock);
                 _command.Parameters.AddWithValue("@ProductId", entity.ProductId);
-
+                 
                 _connection.Open();
                 int result = _command.ExecuteNonQuery();
                 if (result != 1)

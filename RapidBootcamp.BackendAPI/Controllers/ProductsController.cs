@@ -51,20 +51,62 @@ namespace RapidBootcamp.BackendAPI.Controllers
 
         // POST api/<ProductsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult Post(Product product)
         {
+            try
+            {
+                var result = _product.Add(product);
+                return CreatedAtAction(nameof(Get), new { id = result.ProductId }, result);
+            }
+            catch (Exception ex) 
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT api/<ProductsController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public ActionResult Put(int id, Product product)
         {
+            try
+            {
+                var updateData = _product.GetById(id);
+                if (updateData != null)
+                {
+                    updateData.CategoryId = product.CategoryId;
+                    updateData.ProductName = product.ProductName;
+                    updateData.Stock = product.Stock;
+                    updateData.Price= product.Price;
+
+                    var result = _product.Update(updateData);
+                    return Ok(result);
+                }
+                return BadRequest($"Product {product.ProductName} not found");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"{ex.Message}");
+            }
         }
 
         // DELETE api/<ProductsController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult Delete(int id)
         {
+            try
+            {
+                var deleteData = _product.GetById(id);
+                if (deleteData != null)
+                {
+                    _product.Delete(deleteData.ProductId);
+                    return Ok($"Data product id {id} berhasil di delete");
+                }
+                return BadRequest($"Data product id {id} not found");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"could not delete {ex.Message}");
+            }
         }
     }
 }

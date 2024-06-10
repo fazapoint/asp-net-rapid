@@ -9,7 +9,7 @@
         public decimal Price { get; set; }
 
 
-        public IEnumerable<OrderDetail> OrderDetails { get; set; }
+        public IEnumerable<OrderDetail>? OrderDetails { get; set; }
         // navigation property (one to many / one category, many products) **Check Models.Category
         public Category? Category { get; set; }
     }

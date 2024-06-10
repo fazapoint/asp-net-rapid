@@ -59,9 +59,9 @@ namespace RapidBootcamp.BackendAPI.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, Category category)
         {
-            var updateData = _category.GetById(id);
             try
             {
+                var updateData = _category.GetById(id);
                 if (updateData != null)
                 {
                     updateData.CategoryName = category.CategoryName;
