@@ -21,35 +21,30 @@ namespace RapidBootcamp.BackendAPI.DAL
 
         public OrderHeader Add(OrderHeader entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                string query = @"INSERT INTO OrderHeaders(OrderHeaderId, WalletId) 
+                             VALUES(@OrderHeaderId, @WalletId)";
+                _command = new SqlCommand(query, _connection);
+                _command.Parameters.AddWithValue("@OrderHeaderId", entity.OrderHeaderId);
+                _command.Parameters.AddWithValue("@WalletId", entity.WalletId);
+                _connection.Open();
+
+                //menjalankan perintah insert
+                _command.ExecuteNonQuery();
+
+                return entity;
+            }
+            catch (SqlException sqlEx)
+            {
+                throw new ArgumentException(sqlEx.Message);
+            }
+            finally
+            {
+                _command.Dispose();
+                _connection.Close();
+            }
         }
-
-        //public OrderHeader Add(OrderHeader entity)
-        //{
-        //try
-        //{
-        //    string query = @"INSERT INTO OrderHeaders(OrderHeaderId) 
-        //                     VALUES(@CategoryName);select @@identity";
-        //    _command = new SqlCommand(query, _connection);
-        //    _command.Parameters.AddWithValue("@CategoryName", entity.CategoryName);
-        //    _connection.Open();
-
-        //    //menjalankan perintah insert
-        //    int lastCategoryId = Convert.ToInt32(_command.ExecuteScalar());
-        //    entity.CategoryId = lastCategoryId;
-
-        //    return entity;
-        //}
-        //catch (SqlException sqlEx)
-        //{
-        //    throw new ArgumentException(sqlEx.Message);
-        //}
-        //finally
-        //{
-        //    _command.Dispose();
-        //    _connection.Close();
-        //}
-        //}
 
         public void Delete(int id)
         {
@@ -120,7 +115,7 @@ namespace RapidBootcamp.BackendAPI.DAL
             throw new NotImplementedException();
         }
 
-        IEnumerable<ViewOrderHeaderInfo> IOrderHeader.GetAllWithView()
+        public IEnumerable<ViewOrderHeaderInfo> GetAllWithView()
         {
             try
             {
@@ -157,6 +152,33 @@ namespace RapidBootcamp.BackendAPI.DAL
                 _command.Dispose();
                 _connection.Close();
             }
+        }
+
+        public string GetOrderLastHeaderId()
+        {
+            string query = @"select top 1 OrderHeaderId from OrderHeaders
+                                order by OrderHeaderId desc";
+            try
+            {
+                _command = new SqlCommand(query, _connection);
+                _connection.Open();
+                var lastOrderHeaderId = _command.ExecuteScalar().ToString();
+                if (lastOrderHeaderId == null)
+                {
+                    throw new ArgumentException("OrderHeaderId not found");
+                }
+                return lastOrderHeaderId;
+            }
+            catch (SqlException sqlEx)
+            {
+                throw new ArgumentException(sqlEx.Message);
+            }
+            finally
+            {
+                _command.Dispose();
+                _connection.Close();
+            }
+            
         }
     }
 }

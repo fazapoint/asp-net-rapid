@@ -41,8 +41,25 @@ namespace RapidBootcamp.BackendAPI.Controllers
 
         // POST api/<OrderHeaderController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult Post(OrderHeader orderHeader)
         {
+            try
+            {
+                // ambil last orderheaderid
+                string lastOrderHeaderId = _orderHeader.GetOrderLastHeaderId();
+                lastOrderHeaderId = lastOrderHeaderId.Substring(4, 4);
+                int newOrderHeaderId = Convert.ToInt32(lastOrderHeaderId) + 1;
+                string newOrderHeaderIdString = "INV-" + newOrderHeaderId.ToString().PadLeft(4, '0');
+
+                orderHeader.OrderHeaderId = newOrderHeaderIdString;
+
+                var result = _orderHeader.Add(orderHeader);
+                return Ok(result);
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT api/<OrderHeaderController>/5
