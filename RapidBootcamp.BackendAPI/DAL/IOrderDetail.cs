@@ -5,5 +5,6 @@ namespace RapidBootcamp.BackendAPI.DAL
     public interface IOrderDetail : ICrud<OrderDetail>
     {
         public IEnumerable<OrderDetail> GetDetailsByHeaderId(string orderHeaderId);
+        decimal GetTotalAmount(string orderHeaderId);
     }
 }
