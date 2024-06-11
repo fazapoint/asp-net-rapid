@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RapidBootcamp.BackendAPI.DAL;
 using RapidBootcamp.BackendAPI.Models;
+using RapidBootcamp.BackendAPI.ViewModel;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -22,6 +23,13 @@ namespace RapidBootcamp.BackendAPI.Controllers
         {
             var orderHeaders = _orderHeader.GetAll();
             return orderHeaders;
+        }
+
+        [HttpGet("View")]
+        public IEnumerable<ViewOrderHeaderInfo> GetWithView()
+        {
+            var results = _orderHeader.GetAllWithView();
+            return results;
         }
 
         // GET api/<OrderHeaderController>/5

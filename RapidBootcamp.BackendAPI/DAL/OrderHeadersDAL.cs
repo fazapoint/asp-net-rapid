@@ -1,4 +1,5 @@
 ﻿using RapidBootcamp.BackendAPI.Models;
+using RapidBootcamp.BackendAPI.ViewModel;
 using System.Data.SqlClient;
 
 namespace RapidBootcamp.BackendAPI.DAL
@@ -62,7 +63,7 @@ namespace RapidBootcamp.BackendAPI.DAL
                 //poco object untuk menampung data dari database
                 List<OrderHeader> orderHeaders= new List<OrderHeader>();
 
-                string query = @"SELECT * FROM OrderHeaders
+                string query = @"SELECT * FROM ViewOrderHeaderInfo
                                  order by OrderHeaderId desc";
                 _command = new SqlCommand(query, _connection);
 
@@ -78,9 +79,19 @@ namespace RapidBootcamp.BackendAPI.DAL
                         orderHeaders.Add(new OrderHeader
                         {
                             OrderHeaderId = _reader["OrderHeaderId"].ToString(),
-                            CustomerId = Convert.ToInt32(_reader["CategoryName"].ToString()),
-                            TransactionDate = Convert.ToDateTime(_reader["OrderDate"]),
-                            WalletId = Convert.ToInt32(_reader["WalletId"])
+                            TransactionDate = Convert.ToDateTime(_reader["TransactionDate"]),
+                            Wallet = new Wallet
+                            {
+                                CustomerId = Convert.ToInt32(_reader["CustomerId"]),
+                                Customer = new Customer
+                                {
+                                    CustomerName = _reader["CustomerName"].ToString()
+                                },
+                                WalletType = new WalletType
+                                {
+                                    WalletName = _reader["WalletName"].ToString()
+                                }
+                            }
                         });
                     }
                 }
@@ -107,6 +118,45 @@ namespace RapidBootcamp.BackendAPI.DAL
         public OrderHeader Update(OrderHeader entity)
         {
             throw new NotImplementedException();
+        }
+
+        IEnumerable<ViewOrderHeaderInfo> IOrderHeader.GetAllWithView()
+        {
+            try
+            {
+                List<ViewOrderHeaderInfo> viewOrderHeaderInfos = new List<ViewOrderHeaderInfo>();
+                string query = @"select * from ViewOrderHeaderInfo 
+                                 order by OrderHeaderId desc";
+
+                _command = new SqlCommand(query, _connection);
+                _connection.Open();
+                _reader = _command.ExecuteReader();
+                if (_reader.HasRows)
+                {
+                    while (_reader.Read())
+                    {
+                        viewOrderHeaderInfos.Add(new ViewOrderHeaderInfo
+                        {
+                            OrderHeaderId = _reader["OrderHeaderId"].ToString(),
+                            CustomerId = Convert.ToInt32(_reader["CustomerId"]),
+                            CustomerName = _reader["CustomerName"].ToString(),
+                            WalletName = _reader["WalletName"].ToString(),
+                            TransactionDate = Convert.ToDateTime(_reader["TransactionDate"])
+                        });
+                    }
+                }
+                _reader.Close();
+                return viewOrderHeaderInfos;
+            }
+            catch (SqlException sqlEx)
+            {
+                throw new ArgumentException(sqlEx.Message);
+            }
+            finally
+            {
+                _command.Dispose();
+                _connection.Close();
+            }
         }
     }
 }
