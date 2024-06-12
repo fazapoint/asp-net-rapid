@@ -132,7 +132,7 @@ namespace RapidBootcamp.BackendAPI.DAL
             try
             {
                 string query = @"select sum(Price*Qty) from OrderDetails
-                                    Where OrderHeaderId=@OrderHeaderId";
+                                    where OrderHeaderId=@OrderHeaderId";
                 _command = new SqlCommand(query, _connection);
                 _command.Parameters.AddWithValue("@OrderHeaderId", orderHeaderId);
                 _connection.Open();
@@ -142,11 +142,6 @@ namespace RapidBootcamp.BackendAPI.DAL
             catch (SqlException sqlEx)
             {
                 throw new ArgumentException(sqlEx.Message);
-            }
-            finally
-            {
-                _command.Dispose();
-                _connection.Close();
             }
         }
     }
