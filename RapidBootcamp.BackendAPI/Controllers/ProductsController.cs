@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RapidBootcamp.BackendAPI.DAL;
+using RapidBootcamp.BackendAPI.DTO;
 using RapidBootcamp.BackendAPI.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -19,10 +20,30 @@ namespace RapidBootcamp.BackendAPI.Controllers
 
         // GET: api/<ProductsController>
         [HttpGet]
-        public IEnumerable<Product> Get()
+        public IEnumerable<ProductDTO> Get()
         {
+            List<ProductDTO> productDTOs = new List<ProductDTO>();
             var products = _product.GetProductsWithCategory();
-            return products;
+
+            foreach (var product in products)
+            {
+                ProductDTO productDTO = new ProductDTO
+                {
+                    ProductId = product.ProductId,
+                    ProductName = product.ProductName,
+                    Stock = product.Stock,
+                    Price = product.Price,
+                    Category = new CategoryDTO
+                    {
+                        CategoryId = product.Category.CategoryId,
+                        CategoryName = product.Category.CategoryName
+                    }
+                };
+                productDTOs.Add(productDTO);
+                //var products = _product.GetProductsWithCategory();
+                //return products;
+            }
+            return productDTOs;
         }
 
         // GET api/<ProductsController>/5
