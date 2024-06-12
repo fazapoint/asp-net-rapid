@@ -29,7 +29,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // DI (Dependency Injection) using Entity Framework (EF)
 builder.Services.AddScoped<ICategory, CategoriesEF>();
 builder.Services.AddScoped<IProduct, ProductsEF>();
-builder.Services.AddScoped<IOrderHeader, OrderHeadersDAL>();
+builder.Services.AddScoped<IOrderHeader, OrderHeadersEF>();
 builder.Services.AddScoped<IOrderDetail, OrderDetailsDAL>();
 builder.Services.AddScoped<IWallet, WalletsDAL>();
 
