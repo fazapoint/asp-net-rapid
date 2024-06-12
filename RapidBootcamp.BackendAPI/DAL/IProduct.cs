@@ -7,5 +7,6 @@ namespace RapidBootcamp.BackendAPI.DAL
         IEnumerable<Product> GetByCategory(int categoryId);
         IEnumerable<Product> GetByProductName(string productName);
         IEnumerable<Product> GetProductsWithCategory();
+        int GetProductStock(int productId);
     }
 }

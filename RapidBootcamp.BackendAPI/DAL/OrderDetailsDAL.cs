@@ -7,14 +7,16 @@ namespace RapidBootcamp.BackendAPI.DAL
     public class OrderDetailsDAL : IOrderDetail
     {
         private readonly IConfiguration _config;
+        private readonly IProduct _product;
         private string? _connectionString;
         private SqlConnection _connection;
         private SqlCommand _command;
         private SqlDataReader _reader;
 
-        public OrderDetailsDAL(IConfiguration config)
+        public OrderDetailsDAL(IConfiguration config, IProduct product)
         {
             _config = config;
+            _product = product;
             _connectionString = _config.GetConnectionString("DefaultConnection");
             _connection = new SqlConnection(_connectionString);
         }
@@ -23,43 +25,41 @@ namespace RapidBootcamp.BackendAPI.DAL
         {
             try
             {
-                using(TransactionScope scope = new TransactionScope())
+                // cek stok apakah masih ada
+                int stock = _product.GetProductStock(entity.ProductId);
+                if (stock < entity.Qty)
                 {
-                    string query = @"insert into OrderDetails(OrderHeaderId, ProductId, Qty, Price)
+                    throw new ArgumentException("Stock is not enough");
+                }
+
+                string query = @"insert into OrderDetails(OrderHeaderId, ProductId, Qty, Price)
                             values(@OrderHeaderId, @ProductId, @Qty, @Price); select @@identity";
-                    _command = new SqlCommand(query, _connection);
-                    _command.Parameters.AddWithValue("@OrderHeaderId", entity.OrderHeaderId);
-                    _command.Parameters.AddWithValue("@ProductId", entity.ProductId);
-                    _command.Parameters.AddWithValue("@Qty", entity.Qty);
-                    _command.Parameters.AddWithValue("@Price", entity.Price);
-                    _connection.Open();
-                    int id = Convert.ToInt32(_command.ExecuteScalar());
-                    entity.OrderDetailId = id;
+                _command = new SqlCommand(query, _connection);
+                _command.Parameters.AddWithValue("@OrderHeaderId", entity.OrderHeaderId);
+                _command.Parameters.AddWithValue("@ProductId", entity.ProductId);
+                _command.Parameters.AddWithValue("@Qty", entity.Qty);
+                _command.Parameters.AddWithValue("@Price", entity.Price);
+                _connection.Open();
+                int id = Convert.ToInt32(_command.ExecuteScalar());
+                entity.OrderDetailId = id;
 
-                    // update stock di product
-                    string queryUpdate = @"update Products set Stock=Stock-@Qty where ProductId=@ProductId";
-                    SqlCommand cmdUpdate = new SqlCommand(queryUpdate, _connection);
-                    cmdUpdate.Parameters.AddWithValue("@Qty", entity.Qty);
-                    cmdUpdate.Parameters.AddWithValue("@ProductId", entity.ProductId);
-                    cmdUpdate.ExecuteNonQuery();
+                // update stock di product
+                string queryUpdate = @"update Products set Stock=Stock-@Qty where ProductId=@ProductId";
+                SqlCommand cmdUpdate = new SqlCommand(queryUpdate, _connection);
+                cmdUpdate.Parameters.AddWithValue("@Qty", entity.Qty);
+                cmdUpdate.Parameters.AddWithValue("@ProductId", entity.ProductId);
+                cmdUpdate.ExecuteNonQuery();
 
-                    scope.Complete();
-                    return entity;
-                }         
+                return entity;
             }
             catch (SqlException sqlEx)
             {
                 throw new ArgumentException(sqlEx.Message);
             }
-            //catch
-            //{
-
-            //}
             finally
             {
-                _command.Dispose();
                 _connection.Close();
-            }            
+            }
         }
 
         public void Delete(int id)
