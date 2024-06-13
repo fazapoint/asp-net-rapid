@@ -13,7 +13,7 @@ public partial class Product
 
     public string ProductName { get; set; }
 
-    public int? Stock { get; set; }
+    public int Stock { get; set; }
 
     public decimal Price { get; set; }
 

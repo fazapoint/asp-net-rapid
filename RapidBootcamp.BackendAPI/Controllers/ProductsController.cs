@@ -48,10 +48,22 @@ namespace RapidBootcamp.BackendAPI.Controllers
 
         // GET api/<ProductsController>/5
         [HttpGet("{id}")]
-        public Product Get(int id)
+        public ProductDTO Get(int id)
         {
             var product = _product.GetById(id);
-            return product;
+            var productDTO = new ProductDTO
+            {
+                ProductId = product.ProductId,
+                ProductName = product.ProductName,
+                Stock = product.Stock,
+                Price = product.Price,
+                Category = new CategoryDTO
+                {
+                    CategoryId = product.Category.CategoryId,
+                    CategoryName = product.Category.CategoryName
+                }
+            };
+            return productDTO;
         }
 
         // GET api/<ProductsController>/5
@@ -87,22 +99,34 @@ namespace RapidBootcamp.BackendAPI.Controllers
 
         // PUT api/<ProductsController>/5
         [HttpPut("{id}")]
-        public ActionResult Put(int id, Product product)
+        public ActionResult Put(int id, UpdateProductDTO updateProductDTO)
         {
             try
             {
                 var updateData = _product.GetById(id);
                 if (updateData != null)
                 {
-                    updateData.CategoryId = product.CategoryId;
-                    updateData.ProductName = product.ProductName;
-                    updateData.Stock = product.Stock;
-                    updateData.Price= product.Price;
+                    updateData.CategoryId = updateProductDTO.CategoryId;
+                    updateData.ProductName = updateProductDTO.ProductName;
+                    updateData.Stock = updateProductDTO.Stock;
+                    updateData.Price= updateProductDTO.Price;
 
                     var result = _product.Update(updateData);
-                    return Ok(result);
+                    ProductDTO productDTO = new ProductDTO
+                    {
+                        ProductId = result.ProductId,
+                        ProductName = result.ProductName,
+                        Stock = result.Stock,
+                        Price = result.Price,
+                        Category = new CategoryDTO
+                        {
+                            CategoryId = result.Category.CategoryId,
+                            CategoryName = result.Category.CategoryName
+                        }
+                    };
+                    return Ok(productDTO);
                 }
-                return BadRequest($"Product {product.ProductName} not found");
+                return BadRequest($"Product {updateProductDTO.ProductName} not found");
             }
             catch (Exception ex)
             {
