@@ -11,7 +11,6 @@
 
         public Customer? Customer { get; set; }
         //public Shipping ShippedBy { get; set;}
-        public Wallet Wallet { get; set; }
         //public Payment Payment { get; set; }
         public IEnumerable<OrderDetail> OrderDetails { get; set; }
 
